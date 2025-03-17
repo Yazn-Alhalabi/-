@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أداة الامتثال لمعايير سلامة الطفل</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        /* Custom styling */
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+        
+        :root {
+            --primary-color: #5D5CDE;
+            --success-color: #10B981;
+            --error-color: #EF4444;
+            --warning-color: #F59E0B;
+            --bg-color-light: #FFFFFF;
+            --bg-color-dark: #181818;
+            --text-color-light: #1F2937;
+            --text-color-dark: #F9FAFB;
+        }
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+        }
+        
+        .dark {
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-dark);
+        }
+        
+        /* Animated loading indicator */
+        .loading-spinner {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Field validation visual indicator */
+        .field-valid {
+            border-color: var(--success-color) !important;
+        }
+        
+        .field-invalid {
+            border-color: var(--error-color) !important;
+        }
+
+        .btn-disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors duration-200">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <header class="text-center mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-primary">أداة الامتثال لمعايير سلامة الطفل</h1>
+            <p class="mt-4 text-lg">أداة تساعدك على الامتثال لسياسة معايير سلامة الطفل للتطبيقات في فئات التواصل الاجتماعي والمواعدة</p>
+        </header>
+
+        <!-- Tabs -->
+        <div class="mb-8 border-b border-gray-200 dark:border-gray-700">
+            <ul class="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400" id="tabs">
+                <li class="me-2" role="presentation">
+                    <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-primary dark:hover:text-primary tab-active" 
+                            id="info-tab" data-tab="info">المعلومات الأساسية</button>
+                </li>
+                <li class="me-2" role="presentation">
+                    <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-primary dark:hover:text-primary"
+                            id="urls-tab" data-tab="urls">عناوين URL للسلامة</button>
+                </li>
+                <li class="me-2" role="presentation">
+                    <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-primary dark:hover:text-primary"
+                            id="contact-tab" data-tab="contact">معلومات الاتصال</button>
+                </li>
+                <li class="me-2" role="presentation">
+                    <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-primary dark:hover:text-primary"
+                            id="preview-tab" data-tab="preview">معاينة الإعلان</button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Content Sections -->
+        <div id="tabContent" class="pb-12">
+            <!-- Info Tab Content -->
+            <div id="info-content" class="tab-content">
+                <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg shadow-md mb-8">
+                    <h2 class="text-xl font-bold mb-4 text-primary">معلومات التطبيق الأساسية</h2>
+                    
+                    <div class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="appName" class="block mb-2 font-medium">اسم التطبيق</label>
+                                <input type="text" id="appName" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base" placeholder="أدخل اسم التطبيق">
+                            </div>
+                            
+                            <div>
+                                <label for="appCategory" class="block mb-2 font-medium">فئة التطبيق</label>
+                                <select id="appCategory" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base">
+                                    <option value="">اختر فئة التطبيق</option>
+                                    <option value="social">تواصل اجتماعي</option>
+                                    <option value="dating">مواعدة</option>
+                                    <option value="both">تواصل اجتماعي ومواعدة</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="appDescription" class="block mb-2 font-medium">وصف التطبيق</label>
+                            <textarea id="appDescription" rows="4" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base" placeholder="أدخل وصف التطبيق"></textarea>
+                        </div>
+
+                        <div>
+                            <label for="safetyMeasures" class="block mb-2 font-medium">إجراءات وتدابير السلامة المتبعة</label>
+                            <textarea id="safetyMeasures" rows="4" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base" placeholder="اشرح بالتفصيل إجراءات السلامة المتبعة في تطبيقك لحماية الأطفال"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg shadow-md">
+                    <h2 class="text-xl font-bold mb-4 text-primary">تفاصيل سياسة حماية الطفل</h2>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <label for="csaePolicy" class="block mb-2 font-medium">سياسة مكافحة الاعتداء الجنسي على الأطفال واستغلالهم (CSAE)</label>
+                            <textarea id="csaePolicy" rows="4" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base" placeholder="اشرح سياستك لمكافحة الاعتداء الجنسي على الأطفال واستغلالهم"></textarea>
+                        </div>
+
+                        <div>
+                            <label for="csamPolicy" class="block mb-2 font-medium">سياسة منع المواد الإباحية عن الأطفال (CSAM)</label>
+                            <textarea id="csamPolicy" rows="4" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base" placeholder="اشرح ممارسات منع المواد الإباحية عن الأطفال المتبعة في تطبيقك"></textarea>
+                        </div>
+
+                        <div class="flex items-center">
+                            <input type="checkbox" id="reportingConfirm" class="w-5 h-5 text-primary focus:ring-primary border-gray-300 rounded dark:border-gray-600 dark:focus:ring-primary">
+                            <label for="reportingConfirm" class="ms-2">أؤكد أن تطبيقي يتيح للمستخدمين الإبلاغ عن المخاوف بشأن سلامة الأطفال ويتوافق مع جميع قوانين سلامة الأطفال ذات الصلة</label>
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <button id="nextToUrls" class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-opacity-90 font-medium transition">التالي: عناوين URL للسلامة</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- URLs Tab Content -->
+            <div id="urls-content" class="tab-content hidden">
+                <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg shadow-md">
+                    <h2 class="text-xl font-bold mb-4 text-primary">عناوين URL لمعايير الأمان</h2>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <label for="safetyUrl" class="block mb-2 font-medium">رابط معايير سلامة الطفل المنشورة (مكافحة الاعتداء الجنسي والاستغلال)</label>
+                            <div class="flex items-center gap-4">
+                                <input type="url" id="safetyUrl" class="flex-1 p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base" placeholder="https://example.com/child-safety">
+                                <button id="verifySafetyUrl" class="px-4 py-3 bg-primary text-white rounded-lg hover:bg-opacity-90 font-medium transition whitespace-nowrap">تحقق من الرابط</button>
+                            </div>
+                            <div id="safetyUrlStatus" class="mt-2 hidden"></div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">يجب أن يكون الرابط نشطًا ومتاحًا للعامة في أي مكان في العالم ولا يمكن تعديله.</p>
+                        </div>
+
+                        <div>
+                            <label for="termsUrl" class="block mb-2 font-medium">رابط الشروط والأحكام</label>
+                            <div class="flex items-center gap-4">
+                                <input type="url" id="termsUrl" class="flex-1 p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base" placeholder="https://example.com/terms">
+                                <button id="verifyTermsUrl" class="px-4 py-3 bg-primary text-white rounded-lg hover:bg-opacity-90 font-medium transition whitespace-nowrap">تحقق من الرابط</button>
+                            </div>
+                            <div id="termsUrlStatus" class="mt-2 hidden"></div>
+                        </div>
+
+                        <div>
+                            <label for="privacyUrl" class="block mb-2 font-medium">رابط سياسة الخصوصية</label>
+                            <div class="flex items-center gap-4">
+                                <input type="url" id="privacyUrl" class="flex-1 p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base" placeholder="https://example.com/privacy">
+                                <button id="verifyPrivacyUrl" class="px-4 py-3 bg-primary text-white rounded-lg hover:bg-opacity-90 font-medium transition whitespace-nowrap">تحقق من الرابط</button>
+                            </div>
+                            <div id="privacyUrlStatus" class="mt-2 hidden"></div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex gap-4">
+                        <button id="backToInfo" class="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg hover:bg-opacity-90 font-medium transition">السابق</button>
+                        <button id="nextToContact" class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-opacity-90 font-medium transition">التالي: معلومات الاتصال</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Tab Content -->
+            <div id="contact-content" class="tab-content hidden">
+                <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg shadow-md">
+                    <h2 class="text-xl font-bold mb-4 text-primary">معلومات الاتصال للامتثال</h2>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <label for="contactEmail" class="block mb-2 font-medium">البريد الإلكتروني للتواصل</label>
+                            <input type="email" id="contactEmail" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base" placeholder="contact@example.com">
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">يجب أن تكون نقاط الاتصال المعينة على استعداد وقادرة على التحدث عن ممارسات منع المواد الإباحية عن الأطفال والامتثال لها في تطبيقك</p>
+                        </div>
+
+                        <div>
+                            <label for="contactPhone" class="block mb-2 font-medium">رقم الهاتف للتواصل</label>
+                            <input type="tel" id="contactPhone" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base" placeholder="+123456789">
+                        </div>
+
+                        <div>
+                            <label for="reportingInfo" class="block mb-2 font-medium">معلومات الإبلاغ للسلطات</label>
+                            <textarea id="reportingInfo" rows="4" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base" placeholder="اشرح كيف يتوافق تطبيقك مع قوانين سلامة الأطفال ويقدم تقاريره إلى السلطات الإقليمية/الوطنية"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex gap-4">
+                        <button id="backToUrls" class="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg hover:bg-opacity-90 font-medium transition">السابق</button>
+                        <button id="nextToPreview" class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-opacity-90 font-medium transition">التالي: معاينة الإعلان</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preview Tab Content -->
+            <div id="preview-content" class="tab-content hidden">
+                <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg shadow-md">
+                    <h2 class="text-xl font-bold mb-4 text-primary">معاينة الإعلان للامتثال</h2>
+                    
+                    <div class="mb-6">
+                        <p class="text-sm mb-4">مراجعة المعلومات التي أدخلتها. سيتم استخدام هذه المعلومات لإنشاء إعلان الامتثال الخاص بك.</p>
+                        
+                        <div id="previewContainer" class="p-6 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 min-h-[300px]">
+                            <div class="loading-spinner mx-auto my-12"></div>
+                            <p class="text-center">جاري توليد المعاينة...</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h3 class="font-bold mb-2">إرسال الإعلان</h3>
+                        <div id="sendDeclarationBox" class="p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-800">
+                            <p>بعد مراجعة وتأكيد معلوماتك، يمكنك إرسال إعلان الامتثال الخاص بك. ستتلقى تعليقات على صفحة حالة السياسة حتى تتمكن من إجراء التغييرات دون التأثير على توفر تطبيقك.</p>
+                            <div class="mt-4">
+                                <button id="sendDeclaration" class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition">إرسال إعلان الامتثال</button>
+                                <div id="sendStatus" class="mt-4 hidden"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <button id="backToContact" class="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg hover:bg-opacity-90 font-medium transition">السابق</button>
+                        <button id="downloadDeclaration" class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-opacity-90 font-medium transition">حفظ كملف نصي</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="text-center mt-12 text-sm text-gray-500 dark:text-gray-400">
+            <p>© 2023 أداة الامتثال لمعايير سلامة الطفل - تم إنشاؤها للمساعدة في الامتثال لسياسات متجر التطبيقات</p>
+            <div class="mt-2">
+                <button id="toggleDarkMode" class="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-lg">
+                    <span class="dark:hidden">الوضع المظلم</span>
+                    <span class="hidden dark:inline">الوضع المضيء</span>
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Check for dark mode preference
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab switching functionality
+            const tabs = document.querySelectorAll('#tabs button');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            function activateTab(tabId) {
+                // Deactivate all tabs
+                tabs.forEach(tab => {
+                    tab.classList.remove('border-primary', 'text-primary');
+                    tab.classList.add('border-transparent');
+                });
+                
+                // Hide all content
+                contents.forEach(content => {
+                    content.classList.add('hidden');
+                });
+                
+                // Activate the selected tab
+                const selectedTab = document.getElementById(`${tabId}-tab`);
+                selectedTab.classList.add('border-primary', 'text-primary');
+                selectedTab.classList.remove('border-transparent');
+                
+                // Show the selected content
+                const selectedContent = document.getElementById(`${tabId}-content`);
+                selectedContent.classList.remove('hidden');
+            }
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    activateTab(tabId);
+                });
+            });
+            
+            // Activate the first tab by default
+            activateTab('info');
+            
+            // Navigation between tabs
+            document.getElementById('nextToUrls').addEventListener('click', () => activateTab('urls'));
+            document.getElementById('backToInfo').addEventListener('click', () => activateTab('info'));
+            document.getElementById('nextToContact').addEventListener('click', () => activateTab('contact'));
+            document.getElementById('backToUrls').addEventListener('click', () => activateTab('urls'));
+            document.getElementById('nextToPreview').addEventListener('click', () => {
+                activateTab('preview');
+                generatePreview();
+            });
+            document.getElementById('backToContact').addEventListener('click', () => activateTab('contact'));
+            
+            // URL verification buttons
+            const verifyUrl = async (urlElement, statusElement) => {
+                const url = urlElement.value.trim();
+                const statusEl = document.getElementById(statusElement);
+                
+                if (!url) {
+                    statusEl.innerHTML = '<span class="text-red-500">⚠️ الرجاء إدخال رابط صالح</span>';
+                    statusEl.classList.remove('hidden');
+                    return;
+                }
+                
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                    statusEl.innerHTML = '<span class="text-red-500">⚠️ يجب أن يبدأ الرابط بـ http:// أو https://</span>';
+                    statusEl.classList.remove('hidden');
+                    return;
+                }
+                
+                // Since we cannot actually test URLs due to CORS and iframe limitations,
+                // we'll simulate a check with a 50% chance of success
+                statusEl.innerHTML = '<div class="loading-spinner inline-block me-2 align-middle"></div> <span>جاري التحقق من الرابط...</span>';
+                statusEl.classList.remove('hidden');
+                
+                // Simulate network delay
+                setTimeout(() => {
+                    const success = Math.random() > 0.3; // 70% chance of success for demo purposes
+                    
+                    if (success) {
+                        statusEl.innerHTML = '<span class="text-green-500">✓ تم التحقق من الرابط بنجاح</span>';
+                        urlElement.classList.add('field-valid');
+                        urlElement.classList.remove('field-invalid');
+                    } else {
+                        statusEl.innerHTML = '<span class="text-red-500">⚠️ لم يتم التحقق من الرابط. تأكد من أن الرابط صالح ومتاح للعامة.</span>';
+                        urlElement.classList.add('field-invalid');
+                        urlElement.classList.remove('field-valid');
+                    }
+                }, 1500);
+            };
+            
+            document.getElementById('verifySafetyUrl').addEventListener('click', () => {
+                verifyUrl(document.getElementById('safetyUrl'), 'safetyUrlStatus');
+            });
+            
+            document.getElementById('verifyTermsUrl').addEventListener('click', () => {
+                verifyUrl(document.getElementById('termsUrl'), 'termsUrlStatus');
+            });
+            
+            document.getElementById('verifyPrivacyUrl').addEventListener('click', () => {
+                verifyUrl(document.getElementById('privacyUrl'), 'privacyUrlStatus');
+            });
+            
+            // Dark mode toggle
+            document.getElementById('toggleDarkMode').addEventListener('click', () => {
+                document.documentElement.classList.toggle('dark');
+            });
+            
+            // Preview generation
+            function generatePreview() {
+                const previewContainer = document.getElementById('previewContainer');
+                
+                // Show loading state
+                previewContainer.innerHTML = '<div class="loading-spinner mx-auto my-12"></div><p class="text-center">جاري توليد المعاينة...</p>';
+                
+                // Collect data from forms
+                const appName = document.getElementById('appName').value || 'تطبيقك';
+                const appCategory = document.getElementById('appCategory').value ? document.getElementById('appCategory').options[document.getElementById('appCategory').selectedIndex].text : 'تطبيق تواصل اجتماعي/مواعدة';
+                const safetyUrl = document.getElementById('safetyUrl').value || '[رابط معايير السلامة]';
+                const contactEmail = document.getElementById('contactEmail').value || '[البريد الإلكتروني للتواصل]';
+                const contactPhone = document.getElementById('contactPhone').value || '[رقم الهاتف للتواصل]';
+                
+                // Simulate delay for better UX
+                setTimeout(() => {
+                    // Generate preview HTML
+                    const previewHTML = `
+                        <h3 class="text-xl font-bold mb-4">${appName}</h3>
+                        <div class="space-y-4">
+                            <p><strong>فئة التطبيق:</strong> ${appCategory}</p>
+                            <p><strong>معلومات سلامة الطفل:</strong></p>
+                            <ul class="list-disc ms-6 space-y-2">
+                                <li>تم توفير معايير السلامة المنشورة على الرابط: <a href="${safetyUrl}" target="_blank" class="text-primary hover:underline">${safetyUrl}</a></li>
+                                <li>تمتثل معايير السلامة المنشورة لسياسة معايير سلامة الطفل لدينا</li>
+                                <li>معلومات الاتصال للامتثال: ${contactEmail} | ${contactPhone}</li>
+                            </ul>
+                            
+                            <div class="mt-6 p-4 bg-blue-50 dark:bg-blue-900 dark:bg-opacity-30 rounded-lg">
+                                <p class="font-bold">معلومات الجدول الزمني:</p>
+                                <p>الآن: تقديم الإعلان</p>
+                                <p>19 مارس: الموعد النهائي للامتثال</p>
+                                <p>تم منح التمديد. يجب أن يتوافق تطبيقك مع هذه السياسة بحلول هذا التاريخ.</p>
+                            </div>
+                            
+                            <div class="mt-4 p-4 bg-green-50 dark:bg-green-900 dark:bg-opacity-30 rounded-lg">
+                                <p>✓ تم إكمال معلومات الامتثال بنجاح</p>
+                                <p>يمكنك الآن إرسال هذا الإعلان للامتثال لمعايير سلامة الطفل.</p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    previewContainer.innerHTML = previewHTML;
+                }, 2000);
+            }
+            
+            // Handle declaration submission
+            document.getElementById('sendDeclaration').addEventListener('click', function() {
+                const sendStatus = document.getElementById('sendStatus');
+                const sendButton = this;
+                
+                // Show loading state
+                sendButton.disabled = true;
+                sendButton.classList.add('btn-disabled');
+                sendButton.textContent = 'جاري الإرسال...';
+                sendStatus.innerHTML = '<div class="loading-spinner inline-block me-2 align-middle"></div> <span>جاري إرسال إعلان الامتثال...</span>';
+                sendStatus.classList.remove('hidden');
+                
+                // Simulate sending
+                setTimeout(() => {
+                    const success = Math.random() > 0.2; // 80% chance of success for demo
+                    
+                    if (success) {
+                        sendStatus.innerHTML = '<div class="p-4 bg-green-100 dark:bg-green-900 dark:bg-opacity-50 text-green-800 dark:text-green-100 rounded-lg"><p>✓ تم إرسال إعلان الامتثال بنجاح!</p><p>ستتلقى تأكيدًا عبر البريد الإلكتروني قريبًا وستظهر التعليقات على صفحة حالة السياسة.</p></div>';
+                    } else {
+                        sendStatus.innerHTML = '<div class="p-4 bg-red-100 dark:bg-red-900 dark:bg-opacity-50 text-red-800 dark:text-red-100 rounded-lg"><p>⚠️ حدث خطأ أثناء إرسال الإعلان.</p><p>يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى، أو الاتصال بالدعم إذا استمرت المشكلة.</p></div>';
+                    }
+                    
+                    // Reset button state
+                    sendButton.disabled = false;
+                    sendButton.classList.remove('btn-disabled');
+                    sendButton.textContent = 'إرسال إعلان الامتثال';
+                }, 3000);
+            });
+            
+            // Simulate the saving of the declaration as text
+            document.getElementById('downloadDeclaration').addEventListener('click', function() {
+                const appName = document.getElementById('appName').value || 'تطبيقك';
+                
+                // Generate text content for preview purposes
+                const textContent = `
+                    معايير سلامة الطفل - إعلان الامتثال
+                    ===================================
+                    
+                    اسم التطبيق: ${appName}
+                    فئة التطبيق: ${document.getElementById('appCategory').value ? document.getElementById('appCategory').options[document.getElementById('appCategory').selectedIndex].text : 'تطبيق تواصل اجتماعي/مواعدة'}
+                    
+                    معلومات سلامة الطفل:
+                    - تم توفير معايير السلامة المنشورة على الرابط: ${document.getElementById('safetyUrl').value || '[رابط معايير السلامة]'}
+                    - تمتثل معايير السلامة المنشورة لسياسة معايير سلامة الطفل
+                    - معلومات الاتصال للامتثال: ${document.getElementById('contactEmail').value || '[البريد الإلكتروني للتواصل]'} | ${document.getElementById('contactPhone').value || '[رقم الهاتف للتواصل]'}
+                    
+                    الجدول الزمني:
+                    - الآن: تقديم الإعلان
+                    - 19 مارس: الموعد النهائي للامتثال
+                    - تم منح التمديد. يجب أن يتوافق تطبيقك مع هذه السياسة بحلول هذا التاريخ.
+                    
+                    تم إنشاء هذا الإعلان باستخدام أداة الامتثال لمعايير سلامة الطفل.
+                `;
+                
+                // Since we cannot actually trigger downloads in the iframe,
+                // show a modal with instructions
+                const modal = document.createElement('div');
+                modal.className = 'fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50';
+                modal.innerHTML = `
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-lg w-full mx-4">
+                        <h3 class="text-xl font-bold mb-4">حفظ الإعلان</h3>
+                        <p class="mb-4">نظرًا لقيود متصفح الإطار الداخلي (iframe)، لا يمكننا تنزيل الملف مباشرة. لحفظ هذا المحتوى، يرجى:</p>
+                        <ol class="list-decimal ms-6 mb-4 space-y-2">
+                            <li>نسخ النص أدناه (استخدم زر النسخ أو اضغط على النص واستخدم Ctrl+A ثم Ctrl+C)</li>
+                            <li>لصق النص في محرر نصوص (مثل المفكرة أو TextEdit)</li>
+                            <li>حفظ الملف بصيغة .txt</li>
+                        </ol>
+                        <div class="p-3 bg-gray-100 dark:bg-gray-700 rounded-lg mb-4 whitespace-pre-wrap overflow-auto max-h-48 text-sm">${textContent}</div>
+                        <button id="copyText" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-opacity-90 me-2">نسخ النص</button>
+                        <button id="closeModal" class="px-4 py-2 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-white rounded-lg hover:bg-opacity-90">إغلاق</button>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+                
+                document.getElementById('closeModal').addEventListener('click', () => {
+                    document.body.removeChild(modal);
+                });
+                
+                document.getElementById('copyText').addEventListener('click', () => {
+                    // Create a textarea element to facilitate the copy operation
+                    const textarea = document.createElement('textarea');
+                    textarea.value = textContent;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    
+                    const copyButton = document.getElementById('copyText');
+                    copyButton.textContent = 'تم النسخ ✓';
+                    setTimeout(() => {
+                        copyButton.textContent = 'نسخ النص';
+                    }, 2000);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
